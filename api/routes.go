@@ -20,6 +20,9 @@ func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 	{
 		// GET
 		r.GET("/game/:userID", handler.GameHandler(db))
+		v1.GET("/allusers", handler.GetAllUsersHandler(db))
+		v1.GET("/userscores", handler.GetUserScoresHandler(db))
+		v1.GET("/toptenscores", handler.GetTopTenScoresHandler(db))
 
 		// POST
 		v1.POST("/users", handler.CreateUserHandler(db))

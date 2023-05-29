@@ -39,3 +39,48 @@ func GameHandler(db *gorm.DB) gin.HandlerFunc {
 		})
 	}
 }
+
+// GetUsers handles the retrieval of all users.
+func GetAllUsersHandler(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		users, err := store.GetAllUsers(db)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.HTML(http.StatusOK, "allusers.html", gin.H{
+			"users": users,
+		})
+	}
+}
+
+// GetUserScores handles the retrieval of all users.
+func GetUserScoresHandler(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		scores, err := store.GetUserScores(db)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.HTML(http.StatusOK, "userscores.html", gin.H{
+			"scores": scores,
+		})
+	}
+}
+
+// GetTopTenScores handles the retrieval of all users.
+func GetTopTenScoresHandler(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		scores, err := store.GetTopTenScores(db)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.HTML(http.StatusOK, "toptenscores.html", gin.H{
+			"scores": scores,
+		})
+	}
+}
