@@ -29,4 +29,14 @@ func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 		v1.POST("/check-answer", handler.CheckAnswerHandler(db))
 		v1.POST("/final-score", handler.UpdateFinalScoreHandler(db))
 	}
+
+	// Handle the end game request and redirect to the thankyou.html page
+	r.POST("/end-game", func(c *gin.Context) {
+		c.Redirect(http.StatusSeeOther, "/thankyou.html")
+	})
+
+	// Serve the thankyou.html file
+	r.GET("/thankyou.html", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "thankyou.html", gin.H{})
+	})
 }

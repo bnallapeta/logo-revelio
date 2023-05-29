@@ -54,7 +54,10 @@
             </div>
             {{ end }}
         </div>
-        <button id="end-game-button">End Game</button>
+        <!-- <button id="end-game-button">End Game</button> -->
+        <form action="/end-game" method="POST">
+            <button type="submit" id="end-game-button">End Game</button>
+        </form>
     </div>
 </body>
 
@@ -121,15 +124,6 @@
             },
             body: JSON.stringify({ userID: userId, finalScore: finalScore }),
         })
-            .then(response => {
-                if (response.ok) {
-                    // Redirect to the thank you page
-                    window.location.href = "/thankyou.html";
-                } else {
-                    // Handle the response if needed
-                    console.error('Error:', response.status);
-                }
-            })
             .catch((error) => {
                 console.error('Error:', error);
             });

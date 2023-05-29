@@ -92,7 +92,7 @@ func UpdateFinalScoreHandler(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		log.Println("coming till here?")
-		c.JSON(http.StatusOK, gin.H{})
+		c.Redirect(http.StatusPermanentRedirect, "thankyou.html")
 	}
 }
 
