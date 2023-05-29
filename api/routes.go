@@ -26,5 +26,7 @@ func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 
 		// POST
 		v1.POST("/users", handler.CreateUserHandler(db))
+		v1.POST("/check-answer", handler.CheckAnswerHandler(db))
+		v1.POST("/final-score", handler.UpdateFinalScoreHandler(db))
 	}
 }

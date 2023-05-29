@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"log"
 	"net/http"
+	"strconv"
 
+	"github.com/bnallapeta/logo-revelio/pkg/model"
 	"github.com/bnallapeta/logo-revelio/pkg/store"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -37,6 +40,59 @@ func GameHandler(db *gorm.DB) gin.HandlerFunc {
 			"userId": userId,
 			"logos":  logos,
 		})
+	}
+}
+
+// CheckAnswerHandler checks the user provided answer with the one available in the logo map
+// and validates if its the correct answer
+func CheckAnswerHandler(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var submittedAnswer model.Answer
+		if err := c.BindJSON(&submittedAnswer); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		log.Println("submittedAnswer.LogoName: ", submittedAnswer.LogoName)
+		correctLogoName, exists := store.CheckAnswer(submittedAnswer.LogoName, store.Logodata.Logos)
+		if !exists {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid logo name"})
+			return
+		}
+
+		log.Println("correctLogoName: ", correctLogoName)
+		isCorrect := correctLogoName == submittedAnswer.UserAnswer
+
+		c.JSON(http.StatusOK, gin.H{"correct": isCorrect})
+	}
+}
+
+// UpdateFinalScoreHandler updates the final score for a user
+func UpdateFinalScoreHandler(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var Score struct {
+			UserID     string `json:"userID"`
+			FinalScore int    `json:"finalScore"`
+		}
+
+		log.Println("Score.FinalScore: ", Score.FinalScore)
+		if err := c.BindJSON(&Score); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		userID, _ := strconv.Atoi(Score.UserID)
+
+		// Update the score in the database
+		err := store.UpdateScore(db, uint(userID), Score.FinalScore)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		log.Println("coming till here?")
+		c.JSON(http.StatusOK, gin.H{})
 	}
 }
 
