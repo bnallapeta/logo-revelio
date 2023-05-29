@@ -10,6 +10,42 @@
 
 <body>
     <h2>Welcome to Logo Revelio!</h2>
+    <form id="start-game-form">
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Start Game</button>
+    </form>
 </body>
+
+<script>
+    const form = document.getElementById('start-game-form');
+    form.addEventListener('submit', function (e) {
+        // Prevent the form from submitting normally
+        e.preventDefault();
+
+        // Get the name from the form input
+        const userName = document.getElementById('name').value;
+
+        // Send a POST request to the server
+        fetch('/api/v1/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: userName }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Save the user ID to localStorage
+                localStorage.setItem('userId', data.userId);
+
+                // Proceed to the game page
+                window.location.href = "/game/" + data.userId;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+</script>
 
 </html>
