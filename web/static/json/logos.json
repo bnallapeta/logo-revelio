@@ -1,0 +1,10 @@
+{
+    "logos": {
+        "adidas": "/static/images/adidas.png",
+        "puma": "/static/images/puma.png",
+        "nike": "/static/images/nike.png",
+        "converse": "/static/images/converse.png",
+        "fila": "/static/images/fila.png",
+        "jordan": "/static/images/jordan.png"
+    }
+}
