@@ -11,6 +11,7 @@ import (
 func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 	r.LoadHTMLGlob("web/template/*")
 	r.Static("/static", "./web/static")
+	r.Static("/css", "./web/css")
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{})

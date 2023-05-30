@@ -6,59 +6,62 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logo Revelio</title>
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 
 <body>
-    <h2>Welcome to Logo Revelio!</h2>
-    <form id="start-game-form">
-        <label for="name">Your Name:</label>
-        <input type="text" id="name" name="name" required>
-        <button type="submit">Start Game</button>
-    </form>
+    <div class="background-container">
+        <div class="background-first-half"></div>
+        <div class="background-second-half"></div>
+    </div>
 
-    <br>
-    <hr>
-    <br>
-    <form action="/api/v1/allusers" method="GET">
-        <button type="submit">Get Users</button>
-    </form>
-    <form action="/api/v1/userscores" method="GET">
-        <button type="submit">Get All Scores</button>
-    </form>
-    <form action="/api/v1/toptenscores" method="GET">
-        <button type="submit">Get Top 10 Scores</button>
-    </form>
-</body>
+    <div class="overlay-container">
+        <div class="content-container">
+            <h2 class="logo-title">Welcome to Logo Revelio</h2>
+            <form id="start-game-form" class="form">
+                <label for="name" class="label">Enter your name and start the game :)</label>
+                <input type="text" id="name" name="name" required class="input">
+                <div class="button-container">
+                    <button type="submit" class="button">Start Game</button>
+                </div>
+            </form>
 
-<script>
-    const form = document.getElementById('start-game-form');
-    form.addEventListener('submit', function (e) {
-        // Prevent the form from submitting normally
-        e.preventDefault();
+            <form action="/api/v1/userscores" method="GET">
+                <p class="desc">view the Leaderboard and see where you stand!</p>
+                <button type="submit" class="leaderboard-button">Leaderboard</button>
+            </form>
+        </div>
+    </div>
 
-        // Get the name from the form input
-        const userName = document.getElementById('name').value;
+    <script>
+        const form = document.getElementById('start-game-form');
+        form.addEventListener('submit', function (e) {
+            // Prevent the form from submitting normally
+            e.preventDefault();
 
-        // Send a POST request to the server
-        fetch('/api/v1/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: userName }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Save the user ID to localStorage
-                localStorage.setItem('userId', data.userId);
+            // Get the name from the form input
+            const userName = document.getElementById('name').value;
 
-                // Proceed to the game page
-                window.location.href = "/game/" + data.userId;
+            // Send a POST request to the server
+            fetch('/api/v1/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: userName }),
             })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    });
-</script>
+                .then(response => response.json())
+                .then(data => {
+                    // Save the user ID to localStorage
+                    localStorage.setItem('userId', data.userId);
+
+                    // Proceed to the game page
+                    window.location.href = "/game/" + data.userId;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
 
 </html>
