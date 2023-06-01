@@ -34,13 +34,13 @@
                 <col span="1" style="width: 40%;">
             </colgroup>
             <tr>
-                <th>UserID</th>
+                <th>Username</th>
                 <th>Score</th>
                 <th>Achieved At</th>
             </tr>
             {{ range .scores }}
             <tr>
-                <td>{{ .UserID }}</td>
+                <td>{{ .User.Name }}</td>
                 <td>{{ .Score }}</td>
                 <td>{{ .AchievedAt.Format "2006/01/02 - 15:04:05" }}</td>
             </tr>

@@ -1,7 +1,6 @@
 package store
 
 import (
-	"log"
 	"path/filepath"
 	"strings"
 	"time"
@@ -42,7 +41,6 @@ func CheckAnswer(logoName string, logosMap map[string]string) (string, bool) {
 
 // UpdateScore updates the score of the user based on their responses
 func UpdateScore(db *gorm.DB, userID uint, finalScore int) error {
-	log.Println(finalScore)
 	// Get the user
 	user := &model.User{}
 	if err := db.First(user, userID).Error; err != nil {
@@ -79,7 +77,7 @@ func GetAllUsers(db *gorm.DB) ([]model.User, error) {
 
 func GetUserScores(db *gorm.DB) ([]model.Score, error) {
 	var scores []model.Score
-	result := db.Find(&scores)
+	result := db.Preload("User").Find(&scores)
 	if result.Error != nil {
 		return nil, result.Error
 	}

@@ -13,9 +13,13 @@ import (
 // CreateUserHandler handles the creation of a new user and starts the game
 func CreateUserHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		name := c.PostForm("name")
+		var user model.User
+		if err := c.ShouldBindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-		newUser, err := store.AddUserAndStartSession(db, name)
+		newUser, err := store.AddUserAndStartSession(db, user.Name)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to start a new game session"})
 			return

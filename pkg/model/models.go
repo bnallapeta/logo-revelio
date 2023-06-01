@@ -15,16 +15,16 @@ type User struct {
 
 type Score struct {
 	gorm.Model
-	UserID     uint `gorm:"index"` // foreign key
+	UserID     uint `gorm:"index"`
 	Score      int
 	AchievedAt time.Time
-	User       User
+	User       User `gorm:"foreignkey:UserID"`
 }
 
 type Answer struct {
 	gorm.Model
-	UserID     uint `gorm:"index"` // foreign key
-	User       User
+	UserID     uint `gorm:"index"`
+	User       User `gorm:"foreignkey:UserID"`
 	LogoName   string
 	UserAnswer string
 }
