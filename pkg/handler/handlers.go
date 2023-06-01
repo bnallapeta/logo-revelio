@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -54,14 +53,12 @@ func CheckAnswerHandler(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		log.Println("submittedAnswer.LogoName: ", submittedAnswer.LogoName)
 		correctLogoName, exists := store.CheckAnswer(submittedAnswer.LogoName, store.Logodata.Logos)
 		if !exists {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid logo name"})
 			return
 		}
 
-		log.Println("correctLogoName: ", correctLogoName)
 		isCorrect := correctLogoName == submittedAnswer.UserAnswer
 
 		c.JSON(http.StatusOK, gin.H{"correct": isCorrect})
@@ -76,7 +73,6 @@ func UpdateFinalScoreHandler(db *gorm.DB) gin.HandlerFunc {
 			FinalScore int    `json:"finalScore"`
 		}
 
-		log.Println("Score.FinalScore: ", Score.FinalScore)
 		if err := c.BindJSON(&Score); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -91,8 +87,7 @@ func UpdateFinalScoreHandler(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		log.Println("coming till here?")
-		c.Redirect(http.StatusPermanentRedirect, "thankyou.html")
+		c.JSON(http.StatusOK, gin.H{"message": "Score updated successfully"})
 	}
 }
 

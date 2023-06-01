@@ -26,9 +26,8 @@
         {{ end }}
     </div>
 
-    <form action="/end-game" method="POST">
-        <button class="end-button" type="submit" id="end-game-button">End Game</button>
-    </form>
+    <button class="end-button" type="button" id="end-game-button" onclick="endGame()">End Game</button>
+
 
     <script>
         // Initialize the current score in local storage
@@ -83,17 +82,27 @@
             // Get the userID and finalScore from localStorage
             const userId = localStorage.getItem('userId');
             const finalScore = parseInt(localStorage.getItem('currentScore'));
+            const url = "/api/v1/final-score";
 
             // Send the final score to the server
-            fetch('/api/v1/final-score', {
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ userID: userId, finalScore: finalScore }),
             })
-                .catch((error) => {
+                .then(response => {
+                    if (response.status < 300) {
+                        // Proceed to the "thankyou.html" page
+                        window.location.href = "/thankyou.html";
+                    } else {
+                        throw new Error('Failed to update the score.');
+                    }
+                })
+                .catch(error => {
                     console.error('Error:', error);
+                    // Handle the error if needed
                 });
         }
     </script>

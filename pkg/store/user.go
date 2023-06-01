@@ -29,7 +29,6 @@ func AddUserAndStartSession(db *gorm.DB, name string) (*model.User, error) {
 // CheckAnswer validates if the user provided answer is correct or not
 func CheckAnswer(logoName string, logosMap map[string]string) (string, bool) {
 	correctAnswerPath, ok := logosMap[logoName]
-	log.Println("correctAnswerPath: ", correctAnswerPath)
 
 	if ok {
 		// Extract the logo name from the full path
