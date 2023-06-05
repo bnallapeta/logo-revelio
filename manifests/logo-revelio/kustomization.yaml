@@ -1,5 +1,7 @@
 namespace: logo-revelio
 resources:
   - namespace.yaml
+  - roles.yaml
+  - rolebindings.yaml
   - deployment.yaml
   - service.yaml

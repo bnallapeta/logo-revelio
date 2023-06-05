@@ -1,0 +1,10 @@
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: logo-revelio
+  name: argocd-manager-role
+rules:
+  - apiGroups: ["", "apps", "extensions", "batch", "argoproj.io"]
+    resources: ["*"]
+    verbs: ["*"]
