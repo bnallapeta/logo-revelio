@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: logo-revelio
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/bnallapeta/logo-revelio.git
+    targetRevision: main
+    path: manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logo-revelio
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
