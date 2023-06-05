@@ -1,0 +1,11 @@
+namespace: metallb-system
+
+resources:
+  - github.com/metallb/metallb/config/native?ref=v0.13.10
+  - configmap.yaml
+
+patches:
+  - path: remove-l2-configmap.yaml
+
+patchesStrategicMerge:
+  - patch-daemonset.yaml

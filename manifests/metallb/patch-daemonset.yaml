@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: speaker
+  namespace: metallb-system
+spec:
+  template:
+    spec:
+      containers:
+        - name: speaker
+          volumeMounts:
+            - mountPath: /etc/metallb
+              name: metallb-layer2
+              readOnly: true
+      volumes:
+        - name: metallb-layer2
+          configMap:
+            name: metallb-layer2

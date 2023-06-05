@@ -1,13 +1,19 @@
 package store
 
 import (
+	"os"
+
 	"github.com/bnallapeta/logo-revelio/pkg/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func ConnectToDB() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open("../data/logo-revelio.db"), &gorm.Config{})
+	dbPath := os.Getenv("DB_PATH")
+	if dbPath == "" {
+		dbPath = "../data/logo-revelio.db" // Fallback to default path if DB_PATH is not set
+	}
+	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

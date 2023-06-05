@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logo-revelio
+  labels:
+    app: logo-revelio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logo-revelio
+  template:
+    metadata:
+      labels:
+        app: logo-revelio
+    spec:
+      containers:
+        - name: logo-revelio
+          image: quay.io/bnr1/logo-revelio:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/data
+          env:
+            - name: DB_PATH
+              value: "/app/data/logo-revelio.db"
+      volumes:
+        - name: data-volume
+          emptyDir: {}
