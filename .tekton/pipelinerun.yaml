@@ -1,0 +1,33 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  pipelinesascode.tekton.dev/on-event: "push"
+  pipelinesascode.tekton.dev/on-target-branch: "main"
+  name: build-push-pipeline-run-on-push
+spec:
+  pipelineRef:
+    name: build-push-pipeline
+  params:
+  - name: image
+    value: ghcr.io/bnallapeta/logo-revelio
+  - name: pathToContext
+    value: .
+  - name: pathToDockerFile
+    value: Dockerfile
+  - name: gitURL
+    value: https://github.com/bnallapeta/logo-revelio.git
+  - name: gitRevision
+    value: main
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  - name: dockerconfig
+    secret:
+      secretName: regcred
