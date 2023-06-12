@@ -1,8 +1,8 @@
 # Use an official Golang runtime as the base image
-FROM docker.io/library/golang:alpine3.18
+FROM quay.io/projectquay/golang:1.20
 
 # Install necessary dependencies for CGO
-RUN apk add --no-cache gcc musl-dev
+RUN dnf install -y gcc glibc-devel
 
 # Set the working directory inside the container
 WORKDIR /app

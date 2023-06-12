@@ -2,12 +2,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  pipelinesascode.tekton.dev/on-event: "push"
-  pipelinesascode.tekton.dev/on-target-branch: "tekton"
-  name: build-push-pipeline-run-on-push
+  name: img-pipeline-run
+  annotations:
+    pipelinesascode.tekton.dev/on-event: "[pull_request, push]"
+    pipelinesascode.tekton.dev/on-target-branch: "main"
+    pipelinesascode.tekton.dev/task: "[.tekton/tasks/build-push-task.yaml]"
 spec:
   pipelineRef:
-    name: build-push-pipeline
+    name: img-pipeline
   params:
   - name: image
     value: ghcr.io/bnallapeta/logo-revelio
@@ -31,3 +33,6 @@ spec:
   - name: dockerconfig
     secret:
       secretName: regcred
+      items:
+      - key: .dockerconfigjson
+        path: config.json
