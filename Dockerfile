@@ -1,5 +1,5 @@
 # Use an official Golang runtime as the base image
-FROM golang:alpine3.18
+FROM docker.io/library/golang:alpine3.18
 
 # Install necessary dependencies for CGO
 RUN apk add --no-cache gcc musl-dev
