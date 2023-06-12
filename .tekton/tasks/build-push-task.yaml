@@ -1,8 +1,8 @@
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: build-push-image-task
+  name: image-task
 spec:
   params:
   - name: image

@@ -1,8 +1,8 @@
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
-  name: build-push-pipeline
+  name: img-pipeline
 spec:
   params:
   - name: image
@@ -35,7 +35,7 @@ spec:
       value: "true"
   - name: build-push
     taskRef:
-      name: build-push-image-task
+      name: image-task
     runAfter:
     - fetch-repo
     workspaces:
