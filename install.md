@@ -1,6 +1,6 @@
 ### Tekton
 
-#### Pipeline
+#### Pipelines
 `kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.48.0/release.yaml`
 
 #### Pipelines as Code
