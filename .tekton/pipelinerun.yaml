@@ -3,6 +3,10 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: img-pipeline-run
+  annotations:
+    pipelinesascode.tekton.dev/on-event: "[pull_request, push]"
+    pipelinesascode.tekton.dev/on-target-branch: "tekton"
+    pipelinesascode.tekton.dev/task: "[.tekton/tasks/build-push-task.yaml]"
 spec:
   pipelineRef:
     name: img-pipeline

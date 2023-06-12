@@ -3,6 +3,8 @@ apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: img-pipeline
+  annotations:
+    pipelinesascode.tekton.dev/task: "[git-clone]"
 spec:
   params:
   - name: image
