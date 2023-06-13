@@ -21,12 +21,18 @@ spec:
       A workspace that consists the dockerconfigjson file.
     optional: false
   steps:
+  - name: write-commit-sha
+    image: alpine/git
+    script: |
+      cd $(workspaces.source.path)
+      git rev-parse HEAD > .commit_sha
   - name: build-and-push
     image: quay.io/buildah/stable:v1.23.3
     workingDir: $(workspaces.source.path)
     script: |
       export DOCKER_CONFIG="$(workspaces.dockerconfig.path)"
-      IMAGE_TAG=$(params.image):$(context.git.commit)
+      COMMIT_SHA=$(cat .commit_sha)
+      IMAGE_TAG=$(params.image):$COMMIT_SHA
       buildah bud --format=docker --tls-verify=true --no-cache \
         -f $(params.pathToDockerFile) -t $IMAGE_TAG $(params.pathToContext)
       buildah push --tls-verify=true $IMAGE_TAG docker://$IMAGE_TAG
