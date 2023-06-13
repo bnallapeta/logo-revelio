@@ -24,13 +24,7 @@ spec:
     value: main
   workspaces:
   - name: shared-workspace
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
+    emptyDir: {}
   - name: dockerconfig
     secret:
       secretName: regcred
