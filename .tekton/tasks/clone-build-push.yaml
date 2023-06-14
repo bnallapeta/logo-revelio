@@ -36,6 +36,6 @@ spec:
       IMAGE_TAG=$(params.image):$COMMIT_SHA
       buildah bud --format=docker --tls-verify=true --no-cache \
         -f $(params.pathToDockerFile) -t $IMAGE_TAG $(params.pathToContext)
-      buildah push --tls-verify=true $IMAGE_TAG docker://$IMAGE_TAG
+      buildah push --tls-verify=true $IMAGE_TAG $IMAGE_TAG
     securityContext:
       privileged: true
