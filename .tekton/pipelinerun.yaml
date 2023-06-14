@@ -18,9 +18,9 @@ spec:
     value: .
   - name: pathToDockerFile
     value: Dockerfile
-  - name: gitURL
+  - name: url
     value: https://github.com/bnallapeta/logo-revelio.git
-  - name: gitRevision
+  - name: revision
     value: main
   workspaces:
   - name: shared-workspace
