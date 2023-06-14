@@ -1,0 +1,41 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: clone-build-push-task
+spec:
+  params:
+  - name: url
+    description: git url to clone
+  - name: revision
+    description: git revision to use
+    default: "main"
+  - name: image
+    description: Where to publish the resulting image.
+  - name: pathToContext
+    description: The path to the build context, relative to the workspace root.
+  - name: pathToDockerFile
+    description: The path to the Dockerfile, relative to the workspace root.
+  workspaces:
+  - name: output
+  - name: dockerconfig
+  steps:
+  - name: custom-git-clone
+    image: alpine/git
+    script: |
+      git clone $(params.url) $(workspaces.output.path)
+      cd $(workspaces.output.path)
+      git fetch --all
+      git checkout $(git rev-parse origin/$(params.revision))
+      echo $(git rev-parse --short=6 HEAD) > .commit_sha
+  - name: build-and-push
+    image: quay.io/buildah/stable:v1.23.3
+    workingDir: $(workspaces.output.path)
+    script: |
+      export DOCKER_CONFIG="$(workspaces.dockerconfig.path)"
+      COMMIT_SHA=$(cat .commit_sha)
+      IMAGE_TAG=$(params.image):$COMMIT_SHA
+      buildah bud --format=docker --tls-verify=true --no-cache \
+        -f $(params.pathToDockerFile) -t $IMAGE_TAG $(params.pathToContext)
+      buildah push --tls-verify=true $IMAGE_TAG docker://$IMAGE_TAG
+    securityContext:
+      privileged: true
