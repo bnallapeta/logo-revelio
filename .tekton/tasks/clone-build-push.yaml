@@ -27,13 +27,6 @@ spec:
       git fetch --all
       git checkout $(git rev-parse origin/$(params.revision))
       echo $(git rev-parse --short=6 HEAD) > .commit_sha
-  - name: test-pull
-    image: quay.io/buildah/stable:v1.23.3
-    script: |
-      export DOCKER_CONFIG="$(workspaces.dockerconfig.path)"
-      buildah pull ghcr.io/bnallapeta/logo-revelio:latest
-    securityContext:
-      privileged: true      
   - name: build-and-push
     image: quay.io/buildah/stable:v1.23.3
     workingDir: $(workspaces.output.path)
@@ -43,6 +36,6 @@ spec:
       IMAGE_TAG=$(params.image):$COMMIT_SHA
       buildah bud --format=docker --tls-verify=true --no-cache \
         -f $(params.pathToDockerFile) -t $IMAGE_TAG $(params.pathToContext)
-      buildah push --tls-verify=true $IMAGE_TAG $(params.image)
+      buildah push --tls-verify=true $IMAGE_TAG docker://$IMAGE_TAG
     securityContext:
       privileged: true
