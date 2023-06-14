@@ -4,37 +4,37 @@ metadata:
   name: clone-build-push-pipeline
 spec:
   params:
-  - name: url
-    description: git url to clone
-  - name: revision
-    description: git revision to use
-    default: "main"
-  - name: image
-    description: Where to publish the resulting image.
-  - name: pathToContext
-    description: The path to the build context, relative to the workspace root.
-  - name: pathToDockerFile
-    description: The path to the Dockerfile, relative to the workspace root.
-  workspaces:
-  - name: shared-workspace
-  - name: dockerconfig
-  tasks:
-  - name: clone-build-push
-    taskRef:
-      name:clone-build-push-task
-    workspaces:
-    - name: output
-      workspace: shared-workspace
-    - name: dockerconfig
-      workspace: dockerconfig
-    params:
     - name: url
-      value: $(params.url)
+      description: git url to clone
     - name: revision
-      value: $(params.revision)
+      description: git revision to use
+      default: "main"
     - name: image
-      value: $(params.image)
+      description: Where to publish the resulting image.
     - name: pathToContext
-      value: $(params.pathToContext)
+      description: The path to the build context, relative to the workspace root.
     - name: pathToDockerFile
-      value: $(params.pathToDockerFile)
+      description: The path to the Dockerfile, relative to the workspace root.
+  workspaces:
+    - name: shared-workspace
+    - name: dockerconfig
+  tasks:
+    - name: clone-build-push
+      taskRef:
+        name: clone-build-push-task
+      workspaces:
+      - name: output
+        workspace: shared-workspace
+      - name: dockerconfig
+        workspace: dockerconfig
+      params:
+      - name: url
+        value: $(params.url)
+      - name: revision
+        value: $(params.revision)
+      - name: image
+        value: $(params.image)
+      - name: pathToContext
+        value: $(params.pathToContext)
+      - name: pathToDockerFile
+        value: $(params.pathToDockerFile)
