@@ -31,3 +31,6 @@ spec:
       items:
       - key: .dockerconfigjson
         path: config.json
+  - name: git-ssh-credentials
+    secret:
+      secretName: github-token

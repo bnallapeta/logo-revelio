@@ -38,3 +38,18 @@ spec:
         value: $(params.pathToContext)
       - name: pathToDockerFile
         value: $(params.pathToDockerFile)
+    - name: update-and-pr
+      taskRef:
+        name: update-image-tag
+      workspaces:
+      - name: source
+        workspace: shared-workspace
+      params:
+      - name: url
+        value: $(params.url)
+      - name: revision
+        value: $(params.revision)
+      - name: pathToContext
+        value: $(params.pathToContext)
+      - name: pathToDockerFile
+        value: $(params.pathToDockerFile)
