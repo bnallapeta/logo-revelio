@@ -1,0 +1,52 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: update-image-tag
+spec:
+  params:
+  - name: url
+    description: The git repository URL where the PR will be created.
+  - name: revision
+    description: The git branch where the changes have been committed.
+    default: "main"
+  - name: pathToContext
+    description: The path to the build context, relative to the workspace root.
+  - name: commit
+    description: The new image tag to use.
+  workspaces:
+  - name: source
+  - name: git-ssh-credentials
+    description: >-
+      A secret workspace that contains SSH credentials for Git operations.  
+  steps:
+  - name: clone-repo
+    image: alpine/git
+    script: |
+      git clone $(params.gitURL) $(workspaces.source.path)
+      cd $(workspaces.source.path)
+      git checkout $(params.gitRevision)
+  - name: get-latest-commit
+    image: alpine/git
+    script: |
+      cd $(workspaces.source.path)
+      COMMIT=$(git rev-parse HEAD)
+      echo -n $COMMIT > .commit_sha
+  - name: update-image-tag
+    image: mikefarah/yq
+    script: |
+      cd $(workspaces.source.path)
+      COMMIT=$(cat .commit_sha)
+      yq e ".spec.template.spec.containers[0].image = \"ghcr.io/bnallapeta/logo-revelio:$COMMIT\"" -i $(params.pathToContext)/manifests/logo-revelio/deployment.yaml
+  - name: create-pr
+    image: ghcr.io/cli/cli
+    script: |
+      cd $(workspaces.source.path)
+      git config --global user.name 'Auto Update Bot'
+      git config --global user.email 'autoupdate@bot.com'
+      COMMIT=$(cat .commit_sha)
+      git checkout -b "update-deployment-$COMMIT"
+      git add .
+      git commit -m "Update deployment image tag"
+      git push origin "update-deployment-$COMMIT"
+      echo "GH_TOKEN=$(cat /workspaces/git-ssh-credentials/token)" > .env
+      gh pr create --title "Update deployment image tag" --body "This PR updates the deployment image tag to $COMMIT." --base $(params.gitRevision)
