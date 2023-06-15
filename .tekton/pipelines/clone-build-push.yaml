@@ -44,6 +44,7 @@ spec:
       workspaces:
       - name: source
         workspace: shared-workspace
+      - name: git-login-credentials
       params:
       - name: url
         value: $(params.url)

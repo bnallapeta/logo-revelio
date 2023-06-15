@@ -22,7 +22,7 @@ spec:
   - name: custom-git-clone
     image: alpine/git
     script: |
-      git clone $(params.url) $(workspaces.output.path)
+      git clone https://$(params.url) $(workspaces.output.path)
       cd $(workspaces.output.path)
       git fetch --all
       git checkout $(git rev-parse origin/$(params.revision))
