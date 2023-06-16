@@ -25,7 +25,8 @@ spec:
       git clone https://$GIT_USERNAME:$GIT_TOKEN@$(params.url) $(workspaces.source.path)
       cd $(workspaces.source.path)
       git checkout $(params.revision)
-      COMMIT=$(git rev-parse --short HEAD)     
+      COMMIT=$(git rev-parse --short HEAD)
+      echo -n $COMMIT > .commit_sha
   - name: update-image-tag
     image: alpine
     script: |
@@ -33,7 +34,7 @@ spec:
       wget https://github.com/mikefarah/yq/releases/download/v4.13.3/yq_linux_amd64 -O /usr/bin/yq &&\
       chmod +x /usr/bin/yq
       cd $(workspaces.source.path)
-      COMMIT=$(git rev-parse --short HEAD)
+      COMMIT=$(cat .commit_sha)
       chmod 644 ./manifests/logo-revelio/deployment.yaml
       yq e ".spec.template.spec.containers[0].image = \"ghcr.io/bnallapeta/logo-revelio:$COMMIT\"" -i $(params.pathToContext)/manifests/logo-revelio/deployment.yaml
   - name: create-pr
@@ -46,9 +47,12 @@ spec:
       cd $(workspaces.source.path)
       git config --global user.name 'Auto Update Bot'
       git config --global user.email 'autoupdate@bot.com'
+      GIT_TOKEN=$(cat $(workspaces.git-login-credentials.path)/token)
+      echo $GIT_TOKEN | gh auth login --with-token
       COMMIT=$(git rev-parse --short HEAD)
       git checkout -b "update-deployment-$COMMIT"
       git add .
       git commit -m "Update deployment image tag"
       git push origin "update-deployment-$COMMIT"
       gh pr create --title "Update deployment image tag" --body "This PR updates the deployment image tag to $COMMIT." --base $(params.revision)
+
