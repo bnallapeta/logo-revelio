@@ -19,7 +19,7 @@ spec:
   - name: pathToDockerFile
     value: Dockerfile
   - name: url
-    value: https://github.com/bnallapeta/logo-revelio.git
+    value: github.com/bnallapeta/logo-revelio.git
   - name: revision
     value: main
   workspaces:
@@ -31,6 +31,6 @@ spec:
       items:
       - key: .dockerconfigjson
         path: config.json
-  - name: git-ssh-credentials
+  - name: git-login-credentials
     secret:
-      secretName: github-token
+      secretName: github-credentials

@@ -11,42 +11,44 @@ spec:
     default: "main"
   - name: pathToContext
     description: The path to the build context, relative to the workspace root.
-  - name: commit
-    description: The new image tag to use.
   workspaces:
   - name: source
-  - name: git-ssh-credentials
+  - name: git-login-credentials
     description: >-
       A secret workspace that contains SSH credentials for Git operations.  
   steps:
   - name: clone-repo
     image: alpine/git
     script: |
-      git clone $(params.gitURL) $(workspaces.source.path)
+      GIT_USERNAME=$(cat $(workspaces.git-login-credentials.path)/username)
+      GIT_TOKEN=$(cat $(workspaces.git-login-credentials.path)/token)
+      git clone https://$GIT_USERNAME:$GIT_TOKEN@$(params.url) $(workspaces.source.path)
       cd $(workspaces.source.path)
-      git checkout $(params.gitRevision)
-  - name: get-latest-commit
-    image: alpine/git
-    script: |
-      cd $(workspaces.source.path)
-      COMMIT=$(git rev-parse HEAD)
-      echo -n $COMMIT > .commit_sha
+      git checkout $(params.revision)
+      COMMIT=$(git rev-parse --short HEAD)     
   - name: update-image-tag
-    image: mikefarah/yq
+    image: alpine
     script: |
+      apk add --update wget
+      wget https://github.com/mikefarah/yq/releases/download/v4.13.3/yq_linux_amd64 -O /usr/bin/yq &&\
+      chmod +x /usr/bin/yq
       cd $(workspaces.source.path)
-      COMMIT=$(cat .commit_sha)
+      COMMIT=$(git rev-parse --short HEAD)
+      chmod 644 ./manifests/logo-revelio/deployment.yaml
       yq e ".spec.template.spec.containers[0].image = \"ghcr.io/bnallapeta/logo-revelio:$COMMIT\"" -i $(params.pathToContext)/manifests/logo-revelio/deployment.yaml
   - name: create-pr
-    image: ghcr.io/cli/cli
+    image: alpine
     script: |
+      apk add --no-cache git curl
+      curl -fsSL https://github.com/cli/cli/releases/download/v2.0.0/gh_2.0.0_linux_amd64.tar.gz -o ghcli.tar.gz
+      tar -xvf ghcli.tar.gz && rm ghcli.tar.gz
+      mv gh_2.0.0_linux_amd64/bin/gh /usr/local/bin/
       cd $(workspaces.source.path)
       git config --global user.name 'Auto Update Bot'
       git config --global user.email 'autoupdate@bot.com'
-      COMMIT=$(cat .commit_sha)
+      COMMIT=$(git rev-parse --short HEAD)
       git checkout -b "update-deployment-$COMMIT"
       git add .
       git commit -m "Update deployment image tag"
       git push origin "update-deployment-$COMMIT"
-      echo "GH_TOKEN=$(cat /workspaces/git-ssh-credentials/token)" > .env
-      gh pr create --title "Update deployment image tag" --body "This PR updates the deployment image tag to $COMMIT." --base $(params.gitRevision)
+      gh pr create --title "Update deployment image tag" --body "This PR updates the deployment image tag to $COMMIT." --base $(params.revision)
