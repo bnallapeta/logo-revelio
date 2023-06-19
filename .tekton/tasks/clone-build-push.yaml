@@ -25,8 +25,8 @@ spec:
       git clone https://$(params.url) $(workspaces.output.path)
       cd $(workspaces.output.path)
       git fetch --all
-      git checkout $(git rev-parse origin/$(params.revision))
-      echo $(git rev-parse HEAD) > .commit_sha
+      git checkout $(git rev-parse --short origin/$(params.revision))
+      echo $(git rev-parse --short HEAD) > .commit_sha
   - name: build-and-push
     image: quay.io/buildah/stable:v1.23.3
     workingDir: $(workspaces.output.path)
