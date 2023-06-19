@@ -26,6 +26,25 @@ spec:
       cd $(workspaces.output.path)
       git fetch --all
       git checkout $(git rev-parse --short origin/$(params.revision))
+  - name: skip-if-only-tekton-changed
+    image: alpine/git
+    workingDir: $(workspaces.output.path)
+    script: |
+      if [ -f .commit_sha ]; then
+        LAST_COMMIT_SHA=$(cat .commit_sha)
+        CURRENT_COMMIT_SHA=$(git rev-parse --short HEAD)
+        echo $LAST_COMMIT_SHA
+        echo $CURRENT_COMMIT_SHA
+        git diff --name-only $LAST_COMMIT_SHA $CURRENT_COMMIT_SHA -- . ':!.tekton'
+        if [ $? -eq 0 ]; then
+          echo "Only changes in the .tekton directory, skipping build and push."
+          exit 0
+        fi
+      fi
+  - name: update-commit-sha
+    image: alpine/git
+    workingDir: $(workspaces.output.path)
+    script: |
       echo $(git rev-parse --short HEAD) > .commit_sha
   - name: build-and-push
     image: quay.io/buildah/stable:v1.23.3
