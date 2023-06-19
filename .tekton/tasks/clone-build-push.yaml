@@ -37,7 +37,7 @@ spec:
         echo $CURRENT_COMMIT_SHA
         git diff --quiet $LAST_COMMIT_SHA $CURRENT_COMMIT_SHA -- . ':!.tekton'
         if [ $? -eq 0 ]; then
-          echo "Only changes in .tekton directory, skipping build and push."
+          echo "Only changes in the .tekton directory, skipping build and push."
           exit 0
         fi
       fi
