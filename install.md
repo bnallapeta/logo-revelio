@@ -10,6 +10,6 @@ Patch the PaC service to Loadbalancer so that Metallb assings an external IP. Th
 
 `kubectl patch svc pipelines-as-code-controller -n pipelines-as-code -p '{"spec": {"type": "LoadBalancer"}}'`
 
-Create a GitHub Application by following the instaructions from [here](https://pipelinesascode.com/docs/install/github_apps/).
+Create a GitHub Application by following the instructions from [here](https://pipelinesascode.com/docs/install/github_apps/).
 
 Webhook URL in the github app will be the externalIP that the metallb assigned along with the port 8080 - <external-ip>:8080
