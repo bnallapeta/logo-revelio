@@ -27,6 +27,23 @@ spec:
       git fetch --all
       git checkout $(git rev-parse --short origin/$(params.revision))
       echo $(git rev-parse --short HEAD) > .commit_sha
+  - name: skip-if-only-tekton-changed
+    image: alpine/git
+    workingDir: $(workspaces.output.path)
+    script: |
+      if [ -f .last_commit_sha ]; then
+        LAST_COMMIT_SHA=$(cat .last_commit_sha)
+      else
+        LAST_COMMIT_SHA=""
+      fi
+      CURRENT_COMMIT_SHA=$(cat .commit_sha)
+      if [ "$LAST_COMMIT_SHA" != "$CURRENT_COMMIT_SHA" ]; then
+        git diff --quiet $LAST_COMMIT_SHA $CURRENT_COMMIT_SHA -- . ':!.tekton'
+        if [ $? -eq 0 ]; then
+          echo "Only changes in .tekton directory, skipping build and push."
+          exit 0
+        fi
+      fi
   - name: build-and-push
     image: quay.io/buildah/stable:v1.23.3
     workingDir: $(workspaces.output.path)
@@ -39,3 +56,11 @@ spec:
       buildah push --tls-verify=true $IMAGE_TAG docker://$IMAGE_TAG
     securityContext:
       privileged: true
+  - name: update-last-commit-sha
+    image: alpine/git
+    workingDir: $(workspaces.output.path)
+    script: |
+      echo $(cat .commit_sha) > .last_commit_sha
+      git add .last_commit_sha
+      git commit -m "Update last commit sha"
+      git push origin
