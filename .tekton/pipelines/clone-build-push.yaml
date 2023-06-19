@@ -39,6 +39,8 @@ spec:
       - name: pathToDockerFile
         value: $(params.pathToDockerFile)
     - name: update-and-pr
+      runAfter:
+      - clone-build-push
       taskRef:
         name: update-image-tag
       workspaces:
