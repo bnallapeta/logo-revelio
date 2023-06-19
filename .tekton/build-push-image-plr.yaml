@@ -4,12 +4,13 @@ kind: PipelineRun
 metadata:
   name: img-pipeline-run
   annotations:
-    pipelinesascode.tekton.dev/on-event: "[pull_request, push]"
-    pipelinesascode.tekton.dev/on-target-branch: "tekton"
-    pipelinesascode.tekton.dev/task: "[.tekton/tasks/build-push-task.yaml]"
+    pipelinesascode.tekton.dev/on-event: "[push]"
+    pipelinesascode.tekton.dev/on-target-branch: "main"
+    pipelinesascode.tekton.dev/task: "[.tekton/tasks/clone-build-push.yaml]"
+    pipelinesascode.tekton.dev/pipeline: "[.tekton/pipelines/clone-build-push.yaml]"
 spec:
   pipelineRef:
-    name: img-pipeline
+    name: clone-build-push-pipeline
   params:
   - name: image
     value: ghcr.io/bnallapeta/logo-revelio
@@ -17,22 +18,19 @@ spec:
     value: .
   - name: pathToDockerFile
     value: Dockerfile
-  - name: gitURL
+  - name: url
     value: https://github.com/bnallapeta/logo-revelio.git
-  - name: gitRevision
+  - name: revision
     value: main
   workspaces:
   - name: shared-workspace
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
+    emptyDir: {}
   - name: dockerconfig
     secret:
       secretName: regcred
       items:
       - key: .dockerconfigjson
         path: config.json
+  - name: git-ssh-credentials
+    secret:
+      secretName: github-token

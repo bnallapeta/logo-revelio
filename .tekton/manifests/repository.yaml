@@ -1,0 +1,7 @@
+apiVersion: pipelinesascode.tekton.dev/v1alpha1
+kind: Repository
+metadata:
+  name: logo-revelio
+  namespace: logo-revelio-ci
+spec:
+  url: "https://github.com/bnallapeta/logo-revelio"
