@@ -26,7 +26,7 @@ spec:
       cd $(workspaces.output.path)
       git fetch --all
       git checkout $(git rev-parse origin/$(params.revision))
-      echo $(git rev-parse --short=6 HEAD) > .commit_sha
+      echo $(git rev-parse HEAD) > .commit_sha
   - name: build-and-push
     image: quay.io/buildah/stable:v1.23.3
     workingDir: $(workspaces.output.path)
