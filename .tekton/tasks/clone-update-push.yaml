@@ -47,9 +47,12 @@ spec:
       cd $(workspaces.source.path)
       git config --global user.name 'Auto Update Bot'
       git config --global user.email 'autoupdate@bot.com'
+      GIT_TOKEN=$(cat $(workspaces.git-login-credentials.path)/token)
+      echo $GIT_TOKEN | gh auth login --with-token
       COMMIT=$(git rev-parse --short HEAD)
       git checkout -b "update-deployment-$COMMIT"
       git add .
       git commit -m "Update deployment image tag"
       git push origin "update-deployment-$COMMIT"
       gh pr create --title "Update deployment image tag" --body "This PR updates the deployment image tag to $COMMIT." --base $(params.revision)
+
