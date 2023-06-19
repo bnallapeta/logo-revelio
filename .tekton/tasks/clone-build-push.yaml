@@ -33,6 +33,8 @@ spec:
       if [ -f .commit_sha ]; then
         LAST_COMMIT_SHA=$(cat .commit_sha)
         CURRENT_COMMIT_SHA=$(git rev-parse --short HEAD)
+        echo $LAST_COMMIT_SHA
+        echo $CURRENT_COMMIT_SHA
         git diff --quiet $LAST_COMMIT_SHA $CURRENT_COMMIT_SHA -- . ':!.tekton'
         if [ $? -eq 0 ]; then
           echo "Only changes in .tekton directory, skipping build and push."
