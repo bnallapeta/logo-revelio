@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: logo-revelio
-          image: ghcr.io/bnallapeta/logo-revelio:8462cf0
+          image: ghcr.io/bnallapeta/logo-revelio:2b2392b
           ports:
             - containerPort: 8080
           volumeMounts:
