@@ -9,6 +9,12 @@ Logo Revelio is a web application that allows users to play a logo quiz game. Us
 - Leaderboard displaying the top players with their scores.
 - User-friendly interface with a responsive design.
 
+## Installation
+- Simple run the below command from the root of the project:
+  ```
+  kubectl apply -f argocd/logo-revelio-app.yaml
+  ```
+
 ## Technologies Used
 
 - **Backend**: Go (Golang) programming language with Gin framework and GORM for the database.
