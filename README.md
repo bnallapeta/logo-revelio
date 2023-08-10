@@ -9,9 +9,21 @@ Logo Revelio is a web application that allows users to play a logo quiz game. Us
 - Leaderboard displaying the top players with their scores.
 - User-friendly interface with a responsive design.
 
+
+## Prerequisites
+
+A Kubernetes cluster with the following tools installed:
+- [ArgoCD](https://argo-cd.readthedocs.io/en/stable/getting_started/)
+- [Tekton](https://tekton.dev/docs/pipelines/install/)
+- [Pipelines As Code](https://pipelinesascode.com/docs/install/installation/)
+
 ## Installation
-- Simple run the below command from the root of the project:
+
+Clone the project and apply the argocd application from the root of the project:
+
   ```
+  git clone https://github.com/bnallapeta/logo-revelio.git
+  cd logo-revelio
   kubectl apply -f argocd/logo-revelio-app.yaml
   ```
 
