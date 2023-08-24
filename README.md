@@ -51,7 +51,7 @@ Tekton is setup for the project to take care of the Continuous Integration needs
 1. img-pipeline-run: Runs the clone-build-push-pipeline.
 
 
-Pipelines as Code (PaC) is setup in order to watch for PR creation on the repository and trigger the PipelineRun based on the event.
+Pipelines as Code (PaC) is setup in order to watch for new PR creation on the repository and trigger the PipelineRun based on the event.
 
 ## Contributing
 
