@@ -4,7 +4,7 @@ kind: PipelineRun
 metadata:
   name: img-pipeline-run
   annotations:
-    pipelinesascode.tekton.dev/on-event: "[push]"
+    pipelinesascode.tekton.dev/on-event: "[push,pull_request]"
     pipelinesascode.tekton.dev/on-target-branch: "main"
     pipelinesascode.tekton.dev/task: "[.tekton/tasks/clone-build-push.yaml]"
     pipelinesascode.tekton.dev/pipeline: "[.tekton/pipelines/clone-build-push.yaml]"
